@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>المحاكي التنفيذي لقرارات البيانات والذكاء الاصطناعي في منظومة الحج والعمرة | م. سلمان الحربي</title>
+    <meta
+      name="description"
+      content="محاكٍ تنفيذي تفاعلي من تصميم م. سلمان عبد الرحمن الحربي لتحليل أثر حوكمة البيانات وتوثيق الأنظمة مقابل القفز للذكاء الاصطناعي في قطاعات الحج والعمرة."
+    />
+    <meta
+      property="og:title"
+      content="المحاكي التنفيذي لقرارات البيانات والذكاء الاصطناعي في منظومة الحج والعمرة"
+    />
+    <meta
+      property="og:description"
+      content="قمرة قيادة تفاعلية لقياس أثر قرارات البيانات والذكاء الاصطناعي على السيولة وذاكرة الموظف والامتثال السيادي (NDMO/PDPL) في منظومة الحج والعمرة."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-sim-state="neutral">
+    <!-- الطبقة 1: تدرجات الشفق القطبي المستجيبة للحالة -->
+    <div class="ambient-aurora" aria-hidden="true"></div>
+    <!-- الطبقة 2: شبكة عُقد وتدفق البيانات (60fps Canvas) -->
+    <canvas id="data-flow-canvas" aria-hidden="true"></canvas>
+
+    <!-- الشريط العلوي المتوازن (3 مناطق فقط) -->
+    <header class="top-bar">
+      <a href="#bento-cockpit" class="brand-wordmark">
+        م. سلمان الحربي · المحاكي التنفيذي
+      </a>
+
+      <nav class="top-nav" aria-label="التنقل الرئيسي">
+        <a href="#bento-cockpit" class="nav-link">قمرة المحاكاة</a>
+        <button
+          type="button"
+          class="nav-link nav-link-btn"
+          popovertarget="evidence-drawer"
+        >
+          المنهجية والحالات
+        </button>
+        <a href="#insights" class="nav-link">إضاءات #HajjConfex2026</a>
+        <a href="#contact" class="nav-link">الاستشارة والتواصل</a>
+      </nav>
+
+      <div class="top-cta-wrap">
+        <a href="#contact" class="btn-primary-cta">حجز جلسة استشارية</a>
+      </div>
+    </header>
+
+    <!-- العنوان التنفيذي المدمج فوق القمرة مباشرة -->
+    <section class="cockpit-intro" aria-labelledby="hero-heading">
+      <div class="intro-text">
+        <p class="intro-kicker">منظومة الحج والعمرة · حوكمة البيانات قبل الذكاء الاصطناعي</p>
+        <h1 id="hero-heading" class="intro-title">
+          المحاكي التنفيذي لقرارات البيانات والذكاء الاصطناعي
+        </h1>
+      </div>
+      <p class="intro-sub">
+        اختبر أثر ترتيب القرارات بين تأسيس البيانات (NDMO / PDPL) أو القفز المبكر للذكاء الاصطناعي على السيولة، وذاكرة الموظف، وصمود ذروة الموسم.
+      </p>
+    </section>
+
+    <!-- قمرة القيادة ذات الـ 12 عموداً -->
+    <main class="bento-cockpit" id="bento-cockpit">
+      <!-- 1. area-org (4 أعمدة - أعلى اليمين) -->
+      <section class="bento-card area-org" aria-labelledby="org-heading">
+        <div class="card-head-row">
+          <h2 id="org-heading" class="card-title">حجم المنشأة والملاءة المالية</h2>
+          <span id="org-solvency-badge" class="solvency-tag">ملاءة مالية عالية</span>
+        </div>
+
+        <div class="org-toggle-group" role="group" aria-label="اختيار حجم المنشأة">
+          <button
+            type="button"
+            class="seg-btn is-active"
+            data-org="enterprise"
+            aria-pressed="true"
+          >
+            شركة كبرى
+          </button>
+          <button
+            type="button"
+            class="seg-btn"
+            data-org="sme"
+            aria-pressed="false"
+          >
+            منشأة متوسطة أو صغيرة
+          </button>
+        </div>
+
+        <details class="org-details">
+          <summary class="details-summary">
+            تفاصيل الملاءة المالية وسقف المخاطرة
+          </summary>
+          <ul class="org-facts" id="org-facts-list"></ul>
+        </details>
+      </section>
+
+      <!-- 2. area-sectors (6 أعمدة - أعلى الوسط) -->
+      <section class="bento-card area-sectors" aria-labelledby="sectors-heading">
+        <div class="card-head-row">
+          <h2 id="sectors-heading" class="card-title">القطاعات السبعة في المنظومة</h2>
+          <span id="sector-category-label" class="sector-cat-text">قطاع ميداني</span>
+        </div>
+
+        <div
+          class="sectors-scroll-snap"
+          id="sectors-strip"
+          role="tablist"
+          aria-label="اختيار القطاع"
+        ></div>
+
+        <p class="sector-goal-line" id="sector-goal-line"></p>
+      </section>
+
+      <!-- 3. area-evidence-trigger (عمودان - أعلى اليسار) -->
+      <section class="bento-card area-evidence-trigger" aria-label="الأدلة والمنهجية">
+        <button
+          type="button"
+          id="open-evidence-btn"
+          class="evidence-trigger-btn"
+          popovertarget="evidence-drawer"
+        >
+          <span class="beacon-dot" aria-hidden="true"></span>
+          <span class="ev-btn-copy">
+            <strong>المنهجية والحالات (5)</strong>
+            <small>NDMO · PDPL · MIT</small>
+          </span>
+          <span class="ev-arrow" aria-hidden="true">↗</span>
+        </button>
+      </section>
+
+      <!-- 4. area-lab (5 أعمدة × صفان - الخلية الارتكازية) -->
+      <section class="bento-card area-lab" aria-labelledby="lab-heading">
+        <div class="lab-top-row">
+          <div>
+            <h2 id="lab-heading" class="card-title">مختبر بناء الخطة والقرار</h2>
+            <div class="state-badge-row">
+              <span id="sim-state-badge" class="sim-state-badge" data-state="neutral">
+                وضع استكشافي متوازن
+              </span>
+              <span class="readiness-chip">
+                الجاهزية: <strong id="readiness-score" class="kpi-number">62</strong>/100
+              </span>
+            </div>
+          </div>
+
+          <div class="mode-tabs" role="tablist" aria-label="وضع المحاكاة">
+            <button
+              type="button"
+              role="tab"
+              id="tab-quick"
+              class="mode-tab is-active"
+              data-mode="quick"
+              aria-selected="true"
+            >
+              المحاكاة السريعة
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-builder"
+              class="mode-tab"
+              data-mode="builder"
+              aria-selected="false"
+            >
+              مختبر بناء الخطة
+            </button>
+          </div>
+        </div>
+
+        <!-- لوحة المحاكاة السريعة: مقارنة المسارين -->
+        <div id="panel-quick" class="lab-panel">
+          <p class="lab-lead">
+            قارن فورياً بين القفز المباشر نحو الذكاء الاصطناعي وبين بناء أساس البيانات وتوثيق الأنظمة أولاً:
+          </p>
+
+          <div class="quick-paths-grid">
+            <button
+              type="button"
+              class="path-card path-shell"
+              id="btn-path-shell"
+              data-path="shell"
+              aria-pressed="false"
+            >
+              <span class="path-kicker">مسار القشور (35/100)</span>
+              <strong class="path-title">القفز للذكاء الاصطناعي قبل تأسيس البيانات</strong>
+              <span class="path-desc">
+                شراء أدوات ذكاء اصطناعي وشات بوت فوق ملفات متفرقة دون توحيد مصادر أو توثيق.
+              </span>
+            </button>
+
+            <button
+              type="button"
+              class="path-card path-foundation"
+              id="btn-path-foundation"
+              data-path="foundation"
+              aria-pressed="false"
+            >
+              <span class="path-kicker">مسار الأساس (100/100)</span>
+              <strong class="path-title">حوكمة البيانات وتوثيق الأنظمة أولاً ثم الذكاء</strong>
+              <span class="path-desc">
+                تثبيت التوثيق وتوحيد المصدر وتصنيف NDMO/PDPL ثم إطلاق النموذج التنبؤي بأمان.
+              </span>
+            </button>
+          </div>
+
+          <div class="sector-context-card">
+            <div class="context-item">
+              <span class="context-label">السياق الميداني للقطاع:</span>
+              <span id="sector-context-text" class="context-val"></span>
+            </div>
+            <div class="context-item">
+              <span class="context-label">الأثر على ضيف الرحمن:</span>
+              <span id="sector-impact-text" class="context-val"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- لوحة مختبر بناء الخطة (4 مراحل) -->
+        <div id="panel-builder" class="lab-panel" hidden>
+          <div class="builder-guide-bar">
+            <details class="guide-details">
+              <summary class="details-summary">بماذا تبدأ؟ (دليل ترتيب اللبنات)</summary>
+              <p class="guide-copy">
+                ابدأ بـ 2 إلى 3 لبنات أساس (توثيق الأنظمة، توحيد المصادر، تصنيف البيانات) في المرحلتين 1 و2 قبل إضافة الذكاء الاصطناعي في المرحلة 3 أو 4. وضع الذكاء الاصطناعي في البداية يطلق إنذار <strong>«ذكاء فوق الرمال!»</strong>.
+              </p>
+            </details>
+
+            <div class="builder-actions-row">
+              <button type="button" id="btn-apply-ideal" class="btn-ideal-plan">
+                طبّق الخطة المرجعية المثالية (100/100) وشاهد كيف تعمل
+              </button>
+              <button type="button" id="btn-reset-plan" class="btn-ghost-sm">
+                إعادة ضبط
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط المراحل الأربع مع كبسولة منزلقة (RTL Sliding Pill) -->
+          <div class="segmented-track" style="--n: 4" role="radiogroup" aria-label="مراحل الخطة الأربع">
+            <div class="sliding-pill" aria-hidden="true"></div>
+            <label class="stage-radio-label">
+              <input type="radio" name="active-stage" value="0" checked />
+              <span>1. التأسيس</span>
+            </label>
+            <label class="stage-radio-label">
+              <input type="radio" name="active-stage" value="1" />
+              <span>2. التكامل</span>
+            </label>
+            <label class="stage-radio-label">
+              <input type="radio" name="active-stage" value="2" />
+              <span>3. التجريب</span>
+            </label>
+            <label class="stage-radio-label">
+              <input type="radio" name="active-stage" value="3" />
+              <span>4. الذروة</span>
+            </label>
+          </div>
+
+          <!-- الخانات الأربع للخطة -->
+          <div class="slots-grid" id="slots-grid" aria-label="اللبنات المختارة في المراحل الأربع"></div>
+
+          <!-- اللبنات الثماني المتاحة للبناء والتبديل -->
+          <div class="blocks-palette-wrap">
+            <div class="palette-header">
+              <span>اختر لبنة لإضافتها للمرحلة النشطة:</span>
+              <span class="palette-legend">5 لبنات أساس · 3 لبنات ذكاء اصطناعي</span>
+            </div>
+            <div class="blocks-palette" id="blocks-palette"></div>
+          </div>
+        </div>
+
+        <!-- رد فعل الميدان اللحظي -->
+        <div class="field-reaction-box" id="field-reaction-box" aria-live="polite">
+          <div class="reaction-title" id="reaction-title">الوضع الاستكشافي</div>
+          <p class="reaction-desc" id="reaction-desc"></p>
+        </div>
+      </section>
+
+      <!-- 5. area-telemetry (7 أعمدة × صف واحد - يسار الوسط العلوي) -->
+      <section class="bento-card area-telemetry" aria-labelledby="telemetry-heading">
+        <div class="card-head-row">
+          <h2 id="telemetry-heading" class="card-title">المؤشرات التنفيذية الأربعة</h2>
+          <span class="threshold-note">حد الأمان التشغيلي: 70%</span>
+        </div>
+
+        <div class="gauges-grid" id="gauges-grid"></div>
+      </section>
+
+      <!-- 6. area-chain (7 أعمدة × صف واحد - يسار الوسط السفلي) -->
+      <section class="bento-card area-chain" aria-labelledby="chain-heading">
+        <div class="card-head-row">
+          <h2 id="chain-heading" class="card-title">سلسلة الأثر السببية (6 حلقات مترابطة)</h2>
+          <span id="chain-health-summary" class="chain-summary-text">وضع استكشافي</span>
+        </div>
+
+        <div class="chain-pipeline" id="chain-pipeline"></div>
+
+        <!-- توصيات المرحلة التوسعية التالية (تظهر إيجابياً عند اكتمال خطة سليمة) -->
+        <div id="expansion-card" class="expansion-card" hidden>
+          <div class="expansion-title">توصيات المرحلة التوسعية التالية (بعد استقرار الأساس)</div>
+          <div id="expansion-list" class="expansion-list"></div>
+        </div>
+      </section>
+
+      <!-- 7. area-timeline (8 أعمدة - أسفل اليمين) -->
+      <section class="bento-card area-timeline" aria-labelledby="timeline-heading">
+        <div class="card-head-row">
+          <h2 id="timeline-heading" class="card-title">الخط الزمني للأثر المتأخر (3 فصول)</h2>
+          <span id="timeline-org-context" class="timeline-context-label">منظور شركة كبرى</span>
+        </div>
+
+        <div class="timeline-chapters" id="timeline-chapters"></div>
+      </section>
+
+      <!-- 8. area-matrix-peek (4 أعمدة - أسفل اليسار) -->
+      <section class="bento-card area-matrix-peek" aria-labelledby="peek-heading">
+        <h2 id="peek-heading" class="card-title">الخلاصة التنفيذية والشاهد الميداني</h2>
+
+        <div class="peek-contrast-row">
+          <div class="contrast-stat is-positive">
+            <strong class="kpi-delta">+42%</strong>
+            <span>عائد خطة محكومة</span>
+          </div>
+          <div class="contrast-stat is-negative">
+            <strong class="kpi-delta">-68%</strong>
+            <span>استنزاف تجاوز الحوكمة</span>
+          </div>
+        </div>
+
+        <button type="button" id="peek-insight-btn" class="peek-insight-card">
+          <img
+            id="peek-insight-img"
+            src="https://salman-qq.github.io/salman-hajjconfex26-insights/assets/insights/insight-04.webp"
+            alt="الشاهد الميداني المرتبط بالقطاع"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+          <div class="peek-insight-meta">
+            <span class="peek-kicker">شاهد ميداني مرتبط بالقطاع</span>
+            <strong id="peek-insight-title">الطائرات المسيّرة.. عين استباقية</strong>
+          </div>
+        </button>
+
+        <div class="peek-actions">
+          <button type="button" id="btn-copy-linkedin" class="btn-secondary-sm">
+            نسخ التشخيص لـ LinkedIn
+          </button>
+          <a href="#contact" class="btn-outline-sm">حجز استشارة</a>
+        </div>
+        <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+      </section>
+    </main>
+
+    <!-- الدرج التفاعلي الأصلي للمنهجية ودراسات الحالة + الروابط الحكومية الحية -->
+    <aside id="evidence-drawer" popover class="evidence-sheet" aria-labelledby="drawer-title">
+      <div class="drawer-header">
+        <div>
+          <p class="drawer-kicker">المرجعية العلمية والتشريعية</p>
+          <h2 id="drawer-title" class="drawer-title">المنهجية ودراسات الحالة (5)</h2>
+        </div>
+        <button
+          type="button"
+          class="btn-close-drawer"
+          popovertarget="evidence-drawer"
+          popovertargetaction="hide"
+          aria-label="إغلاق درج المنهجية"
+        >
+          إغلاق ✕
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- أوزان المنهجية الاستشارية -->
+        <section class="drawer-section" aria-labelledby="weights-heading">
+          <h3 id="weights-heading" class="drawer-subtitle">الأوزان المعيارية للمنهجية الاستشارية</h3>
+          <div class="weight-bar" id="weight-bar" role="img" aria-label="توزيع الأوزان: 30% حوكمة البيانات، 25% توحيد المصادر، 25% ذاكرة الموظف والتوثيق، 20% تحليلات الذكاء الاصطناعي"></div>
+          <ul class="weights-legend" id="weights-legend"></ul>
+        </section>
+
+        <!-- البطاقات المنهجية -->
+        <section class="drawer-section" aria-labelledby="refs-heading">
+          <h3 id="refs-heading" class="drawer-subtitle">مراجع دولية موثقة</h3>
+          <div class="refs-grid" id="methodology-refs"></div>
+        </section>
+
+        <!-- الروابط الرسمية الحية لسدايا ومكتب إدارة البيانات الوطنية -->
+        <section class="drawer-section" aria-labelledby="sdaia-heading">
+          <h3 id="sdaia-heading" class="drawer-subtitle">الروابط الرسمية الحية (SDAIA / NDMO / PDPL)</h3>
+          <div class="sdaia-links-grid" id="sdaia-links"></div>
+        </section>
+
+        <!-- مصفوفة المقارنة لدراسات الحالات الواقعية الخمس -->
+        <section class="drawer-section" aria-labelledby="cases-heading">
+          <div class="cases-head">
+            <h3 id="cases-heading" class="drawer-subtitle">مصفوفة دراسات الحالة الواقعية (5)</h3>
+            <div class="case-filters" role="group" aria-label="تصفية دراسات الحالة">
+              <button type="button" class="filter-btn is-active" data-filter="all">الكل (5)</button>
+              <button type="button" class="filter-btn" data-filter="success">نجاح التأسيس (2)</button>
+              <button type="button" class="filter-btn" data-filter="failure">تعثر القفز للذكاء (3)</button>
+            </div>
+          </div>
+          <div class="cases-grid" id="cases-grid"></div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- قسم معرض الصور الست الحقيقية من #HajjConfex2026 -->
+    <section id="insights" class="insights-section" aria-labelledby="insights-heading">
+      <div class="section-container">
+        <div class="section-header">
+          <p class="section-kicker">توثيق ميداني حي</p>
+          <h2 id="insights-heading" class="section-title">
+            إضاءات ميدانية وتجارب ملهمة من #HajjConfex2026
+          </h2>
+          <p class="section-lead">
+            ست محطات موثقة من المعرض والمؤتمر تعكس التكامل بين حوكمة البيانات، واللوجستيات الذكية، وتمكين الكفاءات الوطنية في خدمة ضيوف الرحمن.
+          </p>
+        </div>
+
+        <div class="insights-grid" id="insights-grid"></div>
+      </div>
+    </section>
+
+    <!-- نافذة تكبير الصور الأصلية <dialog> -->
+    <dialog id="insight-modal" class="insight-modal" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <button type="button" id="modal-close-btn" class="modal-close-btn" aria-label="إغلاق الصورة">
+          إغلاق ✕
+        </button>
+        <div class="modal-media-wrap">
+          <img id="modal-img" src="" alt="" referrerpolicy="no-referrer" />
+        </div>
+        <div class="modal-body">
+          <span id="modal-cat" class="modal-cat"></span>
+          <h3 id="modal-title" class="modal-title"></h3>
+          <p id="modal-caption" class="modal-caption"></p>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- قسم التواصل الاستشاري وإخلاء المسؤولية -->
+    <footer id="contact" class="contact-footer">
+      <div class="section-container footer-inner">
+        <div class="footer-profile">
+          <p class="footer-kicker">القيادة الاستشارية للمبادرة</p>
+          <h2 class="footer-name">م. سلمان عبد الرحمن الحربي</h2>
+          <p class="footer-role">مستشار حوكمة البيانات وذكاء القرارات في منظومة الحج والعمرة</p>
+          <p class="footer-summary">
+            لتحويل هذه المحاكاة إلى خارطة طريق تنفيذية مخصصة لمنشأتك متوافقة مع ضوابط سدايا (NDMO/PDPL) ومتطلبات المواسم:
+          </p>
+          <div class="footer-links">
+            <a
+              href="https://www.linkedin.com/in/salman-alharbi-data"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-primary-cta"
+            >
+              تواصل عبر LinkedIn ↗
+            </a>
+            <a
+              href="https://github.com/salman-qq"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-outline-lg"
+            >
+              مستودع GitHub ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-disclaimer">
+          <h3>إخلاء المسؤولية المهني</h3>
+          <p>
+            تم تصميم هذا المحاكي التنفيذي لأغراض التوجيه الاستراتيجي وبناء الوعي القيادي بترتيب أولويات البيانات والذكاء الاصطناعي. الأرقام والمؤشرات المعروضة تمثل نماذج تقديرية معيارية مستندة إلى أطر DAMA-DMBOK وضوابط مكتب إدارة البيانات الوطنية (NDMO) ونظام حماية البيانات الشخصية (PDPL)، ولا تُغني عن التقييم التشغيلي والقانوني الميداني المخصص لكل منشأة.
+          </p>
+          <p class="copyright-line">
+            © 2026 م. سلمان عبد الرحمن الحربي · متوافق مع معايير الاستضافة الساكنة
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
