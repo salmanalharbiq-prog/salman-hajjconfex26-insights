@@ -3,9 +3,9 @@ import { STATE_PRESETS } from './data.js';
 import { lerp } from './engine.js';
 
 /**
- * Initialize the 3-layer State-Driven Ambient Engine:
+ * Calm State-Driven Ambient Engine:
  * 1) CSS @property Aurora Mesh via body[data-sim-state]
- * 2) 60fps HTML5 Canvas Node-Link Data Flow with lerp(0.05) & Data Packets
+ * 2) Subtle 60fps HTML5 Canvas Node-Link Data Flow (lerp 0.05)
  * 3) Unified pointermove Cursor-Tracking Spotlight Borders on .bento-card
  */
 export function initAmbientEngine() {
@@ -13,35 +13,141 @@ export function initAmbientEngine() {
   const canvas = /** @type {HTMLCanvasElement | null} */ (
     document.getElementById('data-flow-canvas')
   );
-  const cockpit = document.getElementById('bento-cockpit');
 
-  // Layer 3: Cursor-tracking spotlight border on bento cards
-  if (cockpit && !prefersReducedMotion) {
-    /** @type {NodeListOf<HTMLElement>} */
-    const cards = cockpit.querySelectorAll('.bento-card');
+  // Layer 3: Proximity cursor-tracking + mobile touch/scroll glow across all card boxes
+  if (!prefersReducedMotion) {
+    const CARD_SELECTOR =
+      '.bento-card, .kpi-gauge-card, .chain-node, .chapter-card, .insight-card, .slot-card, .footer-disclaimer';
+    /** @type {HTMLElement[]} */
+    let cards = Array.from(document.querySelectorAll(CARD_SELECTOR));
+    let cardsDirty = false;
+
+    const observer = new MutationObserver(() => {
+      cardsDirty = true;
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
     let rafPending = false;
     let lastX = -9999;
     let lastY = -9999;
+    let lastPointerTime = 0;
+    /** @type {'mouse' | 'touch'} */
+    let lastMode = window.matchMedia('(hover: none)').matches ? 'touch' : 'mouse';
+    /** @type {HTMLElement | null} */
+    let touchedCard = null;
+    let touchTimer = 0;
 
-    cockpit.addEventListener(
+    function syncCardsList() {
+      if (cardsDirty) {
+        cards = Array.from(document.querySelectorAll(CARD_SELECTOR));
+        cardsDirty = false;
+      }
+    }
+
+    function updatePointerGlow() {
+      syncCardsList();
+      const vh = window.innerHeight;
+      for (let i = 0; i < cards.length; i += 1) {
+        const card = cards[i];
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom < -180 || rect.top > vh + 180) continue;
+
+        const clampedX = Math.max(rect.left, Math.min(lastX, rect.right));
+        const clampedY = Math.max(rect.top, Math.min(lastY, rect.bottom));
+        const dist = Math.hypot(lastX - clampedX, lastY - clampedY);
+        const radius = 210;
+        const proximity = Math.max(0, 1 - dist / radius);
+
+        card.style.setProperty('--mouse-x', `${(lastX - rect.left).toFixed(1)}px`);
+        card.style.setProperty('--mouse-y', `${(lastY - rect.top).toFixed(1)}px`);
+        card.style.setProperty('--glow-strength', proximity.toFixed(3));
+      }
+    }
+
+    function updateScrollFocalGlow() {
+      syncCardsList();
+      const vh = window.innerHeight;
+      const focalY = vh * 0.46;
+      const band = vh * 0.42;
+
+      for (let i = 0; i < cards.length; i += 1) {
+        const card = cards[i];
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > vh) {
+          card.style.setProperty('--glow-strength', '0');
+          continue;
+        }
+        const centerY = rect.top + rect.height / 2;
+        const distFromFocal = Math.abs(centerY - focalY);
+        const strength = Math.max(0.18, Math.min(0.88, 1 - distFromFocal / band));
+        card.style.setProperty('--mouse-x', `${(rect.width * 0.5).toFixed(1)}px`);
+        card.style.setProperty('--mouse-y', `${(rect.height * 0.36).toFixed(1)}px`);
+        card.style.setProperty('--glow-strength', strength.toFixed(3));
+      }
+    }
+
+    function scheduleUpdate() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        const now = performance.now();
+        if (lastMode === 'mouse' && now - lastPointerTime < 3500 && lastX > -1000) {
+          updatePointerGlow();
+        } else {
+          updateScrollFocalGlow();
+        }
+      });
+    }
+
+    document.addEventListener(
       'pointermove',
       (e) => {
         lastX = e.clientX;
         lastY = e.clientY;
-        if (rafPending) return;
-        rafPending = true;
-        requestAnimationFrame(() => {
-          rafPending = false;
-          for (let i = 0; i < cards.length; i += 1) {
-            const card = cards[i];
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty('--mouse-x', `${lastX - rect.left}px`);
-            card.style.setProperty('--mouse-y', `${lastY - rect.top}px`);
-          }
-        });
+        lastPointerTime = performance.now();
+        lastMode = e.pointerType === 'touch' ? 'touch' : 'mouse';
+        if (lastMode === 'mouse') {
+          scheduleUpdate();
+        } else {
+          updatePointerGlow();
+        }
       },
       { passive: true }
     );
+
+    /** @param {TouchEvent} e */
+    function handleTouch(e) {
+      const touch = e.touches[0];
+      if (!touch) return;
+      lastX = touch.clientX;
+      lastY = touch.clientY;
+      lastPointerTime = performance.now();
+      lastMode = 'touch';
+
+      const target = /** @type {HTMLElement | null} */ (e.target)?.closest(CARD_SELECTOR);
+      if (target instanceof HTMLElement) {
+        if (touchedCard && touchedCard !== target) {
+          touchedCard.classList.remove('is-touch-lit');
+        }
+        touchedCard = target;
+        touchedCard.classList.add('is-touch-lit');
+        window.clearTimeout(touchTimer);
+        touchTimer = window.setTimeout(() => {
+          touchedCard?.classList.remove('is-touch-lit');
+        }, 900);
+      }
+      scheduleUpdate();
+    }
+
+    document.addEventListener('touchstart', handleTouch, { passive: true });
+    document.addEventListener('touchmove', handleTouch, { passive: true });
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+
+    // Initial gentle illumination for visible cards (especially on mobile)
+    requestAnimationFrame(() => {
+      updateScrollFocalGlow();
+    });
   }
 
   if (!canvas) {
@@ -89,11 +195,14 @@ export function initAmbientEngine() {
       nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: Math.cos(angle) * (0.4 + Math.random() * 0.6),
-        vy: Math.sin(angle) * (0.4 + Math.random() * 0.6),
-        radius: 1.5 + (i % 3) * 0.65,
+        vx: Math.cos(angle) * (0.35 + Math.random() * 0.45),
+        vy: Math.sin(angle) * (0.35 + Math.random() * 0.45),
+        radius: 1.4 + (i % 3) * 0.5,
         phase: (i / count) * Math.PI * 2,
       });
+    }
+    if (canvas) {
+      canvas.setAttribute('data-node-count', String(nodes.length));
     }
   }
 
@@ -121,9 +230,8 @@ export function initAmbientEngine() {
 
   function drawFrame() {
     if (!ctx) return;
-    tick += 0.018;
+    tick += 0.012;
 
-    // Lerp physics & color toward target state
     current.speed = lerp(current.speed, target.speed, 0.05);
     current.maxDist = lerp(current.maxDist, target.maxDist, 0.05);
     current.r = lerp(current.r, target.r, 0.05);
@@ -137,7 +245,6 @@ export function initAmbientEngine() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Update node positions
     for (let i = 0; i < nodes.length; i += 1) {
       const n = nodes[i];
       if (!prefersReducedMotion) {
@@ -150,7 +257,6 @@ export function initAmbientEngine() {
       }
     }
 
-    // Connect nearby nodes (using squared distance, zero Math.sqrt)
     let packetIndex = 0;
     for (let i = 0; i < nodes.length; i += 1) {
       const a = nodes[i];
@@ -162,21 +268,20 @@ export function initAmbientEngine() {
 
         if (distSq < maxDistSq) {
           const strength = 1 - distSq / maxDistSq;
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(strength * 0.28).toFixed(3)})`;
-          ctx.lineWidth = 0.8 + strength * 0.9;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(strength * 0.17).toFixed(3)})`;
+          ctx.lineWidth = 0.75 + strength * 0.7;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(nodeB.x, nodeB.y);
           ctx.stroke();
 
-          // Flowing Data Packet pulse on strong links
-          if (!prefersReducedMotion && strength > 0.35 && packetIndex % 4 === 0) {
+          if (!prefersReducedMotion && strength > 0.4 && packetIndex % 5 === 0) {
             const t = (tick + a.phase) % 1;
             const px = lerp(a.x, nodeB.x, t);
             const py = lerp(a.y, nodeB.y, t);
-            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(strength * 0.85).toFixed(3)})`;
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(strength * 0.55).toFixed(3)})`;
             ctx.beginPath();
-            ctx.arc(px, py, 1.8, 0, Math.PI * 2);
+            ctx.arc(px, py, 1.5, 0, Math.PI * 2);
             ctx.fill();
           }
           packetIndex += 1;
@@ -184,10 +289,9 @@ export function initAmbientEngine() {
       }
     }
 
-    // Draw nodes
     for (let i = 0; i < nodes.length; i += 1) {
       const n = nodes[i];
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.62)`;
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.42)`;
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
       ctx.fill();
@@ -212,8 +316,6 @@ export function initAmbientEngine() {
       currentPresetKey = simState;
       target = STATE_PRESETS[simState] || STATE_PRESETS.neutral;
       document.body.setAttribute('data-sim-state', simState);
-      document.documentElement.style.setProperty('--aurora-c1', target.aurora1);
-      document.documentElement.style.setProperty('--aurora-c2', target.aurora2);
       if (prefersReducedMotion) {
         drawFrame();
       }
